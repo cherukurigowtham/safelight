@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invesa-frontend
+  namespace: invesa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invesa-frontend
+  template:
+    metadata:
+      labels:
+        app: invesa-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: invesa-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: API_BASE_URL
+          value: "http://invesa-api:3001"
+        - name: FRONTEND_ORIGIN
+          value: "http://localhost:3000"
+        envFrom:
+        - configMapRef:
+            name: invesa-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invesa-frontend
+  namespace: invesa
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    app: invesa-frontend

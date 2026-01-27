@@ -1,0 +1,105 @@
+/* ============================
+   Page Layout
+   ============================ */
+
+.main {
+    padding-top: calc(var(--header-height) + 2rem);
+    padding-bottom: calc(var(--footer-height) + 2rem);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================
+   Card
+   ============================ */
+
+.card {
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================
+   Typography
+   ============================ */
+
+.title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    font-size: 1.8rem;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 2rem;
+}
+
+/* ============================
+   Form
+   ============================ */
+
+.field {
+    margin-bottom: 1rem;
+}
+
+.label {
+    display: block;
+    color: #aaa;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    font-family: inherit;
+}
+
+.textarea {
+    resize: vertical;
+}
+
+.button {
+    width: 100%;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #d4af37 0%, #b4912f 100%);
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+/* ============================
+   Footer Info
+   ============================ */
+
+.footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.footerLine {
+    margin-bottom: 0.5rem;
+}

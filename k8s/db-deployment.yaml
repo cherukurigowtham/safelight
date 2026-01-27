@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invesa-db
+  namespace: invesa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invesa-db
+  template:
+    metadata:
+      labels:
+        app: invesa-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: invesa-secrets
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          value: "invesa"
+        # Using emptyDir for simple demo (Data lost on pod restart)
+        # In production, use PersistentVolumeClaim
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: db-storage
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invesa-db
+  namespace: invesa
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: invesa-db

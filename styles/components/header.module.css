@@ -1,0 +1,86 @@
+.header {
+    width: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.9),
+        rgba(0, 0, 0, 0.75)
+    );
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+}
+
+.inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* =========================
+   Logo
+   ========================= */
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4b254; /* gold */
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.logo:hover {
+    opacity: 0.9;
+}
+
+/* =========================
+   Navigation
+   ========================= */
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav a {
+    color: #cbd5e1; /* soft gray */
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.nav a:hover {
+    color: #facc15; /* gold hover */
+}
+
+/* =========================
+   User Greeting
+   ========================= */
+
+.user {
+    font-size: 0.95rem;
+    color: #facc15; /* gold */
+}
+
+/* =========================
+   Logout Button
+   ========================= */
+
+.logout {
+    background: transparent;
+    border: 1px solid rgba(250, 204, 21, 0.6);
+    color: #facc15;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout:hover {
+    background: rgba(250, 204, 21, 0.1);
+    border-color: #facc15;
+}

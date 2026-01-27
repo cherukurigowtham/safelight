@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: invesa
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - db-deployment.yaml
+  - api-deployment.yaml
+  - frontend-deployment.yaml
+
+# Uncomment and modify if you want to apply common labels or annotations
+# commonLabels:
+#   project: invesa

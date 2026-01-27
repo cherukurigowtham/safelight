@@ -1,0 +1,86 @@
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.categoryBadge {
+  position: absolute;
+  top: -10px;
+  left: 1rem;
+  background: var(--accent-gold);
+  color: #000;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: rgba(212, 175, 55, 0.3); /* Gold accent */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.funded {
+  font-size: 0.9rem;
+  color: #d4af37; /* Gold */
+  font-weight: 600;
+}
+
+.content {
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.investBtn {
+  background: linear-gradient(135deg, #d4af37 0%, #b4912f 100%);
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.investBtn:hover {
+  opacity: 0.9;
+}
+
+.commentLink {
+  color: #888;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.commentLink:hover {
+  color: #fff;
+}

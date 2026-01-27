@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invesa-api
+  namespace: invesa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invesa-api
+  template:
+    metadata:
+      labels:
+        app: invesa-api
+    spec:
+      containers:
+      - name: api
+        image: invesa-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3001
+        envFrom:
+        - configMapRef:
+            name: invesa-config
+        - secretRef:
+            name: invesa-secrets
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invesa-api
+  namespace: invesa
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3001
+    targetPort: 3001
+  selector:
+    app: invesa-api

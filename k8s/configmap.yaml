@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: invesa-config
+  namespace: invesa
+data:
+  NODE_ENV: "production"
+  FRONTEND_ORIGIN: "http://localhost:3000"
+  JWT_ACCESS_EXPIRES_IN: "15m"
+  JWT_REFRESH_EXPIRES_IN: "7d"
+  API_BASE_URL: "http://invesa-api:3001"
