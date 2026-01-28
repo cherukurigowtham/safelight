@@ -51,7 +51,7 @@ describe('Investments Endpoints', () => {
             .set('Authorization', `Bearer ${creatorToken}`)
             .send({
                 content: 'Invest in Me',
-                category: 'Biz',
+                category: 'Tech',
                 amountNeeded: 10000
             });
         postId = postRes.body.id;

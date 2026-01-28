@@ -31,7 +31,7 @@ export async function sendEmailOtp(email, otp) {
     try {
         await transporter.sendMail({
             to: email,
-            from: EMAIL_USER || 'no-reply@invesa.com',
+            from: EMAIL_USER || 'invesa.services@gmail.com',
             subject: 'Your OTP',
             html: `<h2>${otp}</h2><p>Expires in 5 minutes</p>`
         });
