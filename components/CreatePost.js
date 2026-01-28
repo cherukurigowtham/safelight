@@ -11,7 +11,7 @@ export default function CreatePost({ onPostCreated }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         if (!token) return;
 
         await fetch(`${API_BASE_URL}/api/posts`, {

@@ -132,6 +132,9 @@ export default function Signup() {
         }
 
         // Tokens are now delivered as HttpOnly cookies from the server
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
         router.push('/');
     }
 
