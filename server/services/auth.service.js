@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../config/db.js';
+import { insertWalletTransaction } from '../repositories/wallet.repository.js';
 
 import {
     ACCESS_TOKEN_SECRET,
@@ -11,9 +12,12 @@ import {
 
 export async function registerUser({ fullName, email, password }) {
     const hashedPassword = await bcrypt.hash(password, 12);
+    const client = await pool.connect();
 
     try {
-        const { rows } = await pool.query(
+        await client.query('BEGIN');
+
+        const { rows } = await client.query(
             `
             INSERT INTO users (full_name, email, password_hash, email_verified)
             VALUES ($1, $2, $3, true)
@@ -22,13 +26,27 @@ export async function registerUser({ fullName, email, password }) {
             [fullName, email, hashedPassword]
         );
 
-        return rows[0];
+        const user = rows[0];
+
+        // Add welcome bonus
+        await insertWalletTransaction(client, {
+            userId: user.id,
+            amount: 1000,
+            type: 'WELCOME',
+            referenceId: null
+        });
+
+        await client.query('COMMIT');
+        return user;
     } catch (err) {
+        await client.query('ROLLBACK');
         // Unique email violation
         if (err.code === '23505') {
             return null;
         }
         throw err;
+    } finally {
+        client.release();
     }
 }
 

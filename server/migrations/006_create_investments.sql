@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS investments (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  post_id INTEGER REFERENCES posts(id),
+  amount INTEGER NOT NULL,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);
