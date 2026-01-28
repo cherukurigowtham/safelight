@@ -89,11 +89,10 @@
    ============================================================ */
 
 .postActions {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 1.5rem;
     display: flex;
     gap: 0.5rem;
+    justify-content: flex-end;
+    padding: 0.5rem 1rem;
 }
 
 .actionButton {

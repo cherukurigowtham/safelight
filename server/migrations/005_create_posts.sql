@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS posts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  content TEXT NOT NULL,
+  category TEXT NOT NULL,
+  amount_needed INTEGER NOT NULL,
+  amount_funded INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);

@@ -37,8 +37,9 @@ export default function Signup() {
 
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const [captcha, setCaptcha] = useState({ q: '', a: 0 });
+    const [captcha, setCaptcha] = useState({ id: '', question: '' });
     const [captchaInput, setCaptchaInput] = useState('');
 
     useEffect(() => {
@@ -53,12 +54,15 @@ export default function Signup() {
        CAPTCHA
        ======================================================== */
 
-    // refreshCaptcha available for manual refresh after mount
-    function refreshCaptcha() {
-        const a = Math.floor(Math.random() * 10) + 1;
-        const b = Math.floor(Math.random() * 10) + 1;
-        setCaptcha({ q: `${a} + ${b}`, a: a + b });
-        setCaptchaInput('');
+    async function refreshCaptcha() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/captcha`);
+            const data = await res.json();
+            setCaptcha(data);
+            setCaptchaInput('');
+        } catch {
+            setError('Failed to load CAPTCHA');
+        }
     }
 
     /* ========================================================
@@ -68,12 +72,7 @@ export default function Signup() {
     async function sendOtp(e) {
         e.preventDefault();
         setError('');
-
-        if (Number(captchaInput) !== captcha.a) {
-            setError('Invalid CAPTCHA');
-            refreshCaptcha();
-            return;
-        }
+        setLoading(true);
 
         const res = await fetch(`${API_BASE_URL}/api/signup/request-otp`, {
             method: 'POST',
@@ -81,12 +80,15 @@ export default function Signup() {
             body: JSON.stringify({
                 email: form.email,
                 captchaAnswer: captchaInput,
-                captchaExpected: captcha.a
+                captchaId: captcha.id
             })
         });
 
+        setLoading(false);
+
         if (!res.ok) {
-            setError('Failed to send OTP');
+            const data = await res.json().catch(() => ({}));
+            setError(data.message || 'Failed to send OTP');
             refreshCaptcha();
             return;
         }
@@ -132,6 +134,9 @@ export default function Signup() {
         }
 
         // Tokens are now delivered as HttpOnly cookies from the server
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
         router.push('/');
     }
 
@@ -178,7 +183,7 @@ export default function Signup() {
                             />
 
                             <p>
-                                Solve: <strong>{captcha.q}</strong>
+                                Solve: <strong>{captcha.question}</strong>
                             </p>
 
                             <input
@@ -189,8 +194,8 @@ export default function Signup() {
                                 required
                             />
 
-                            <button className={styles.button}>
-                                Send OTP
+                            <button className={styles.button} disabled={loading}>
+                                {loading ? 'Sending...' : 'Send OTP'}
                             </button>
                         </form>
                     )}

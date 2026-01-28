@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
 import { pool } from '../config/db.js';
-import { registerUser, generateTokens } from '../services/auth.service.js';
+import { registerUser, generateTokens, findUserByEmail, saveRefreshToken, deleteRefreshToken } from '../services/auth.service.js';
 import { createEmailOtp, verifyEmailOtp } from '../services/otp.service.js';
 import { sendEmailOtp } from '../services/email.service.js';
-import { verifyCaptcha } from '../services/captcha.service.js';
+import { verifyCaptcha } from './captcha.controller.js';
+import { getUserBalance } from '../repositories/wallet.repository.js';
 
 /* ============================================================
    SIGNUP — STEP 1: REQUEST OTP (NO USER CREATED)
@@ -11,9 +12,10 @@ import { verifyCaptcha } from '../services/captcha.service.js';
 
 export async function requestSignupOtp(req, res) {
     try {
-        const { email, captchaAnswer, captchaExpected } = req.body;
+        const { email, captchaAnswer, captchaId } = req.body;
 
-        if (!verifyCaptcha(captchaExpected, captchaAnswer)) {
+        const validCaptcha = await verifyCaptcha(captchaId, captchaAnswer);
+        if (!validCaptcha) {
             return res.status(400).json({ message: 'Invalid CAPTCHA' });
         }
 
@@ -49,6 +51,10 @@ export async function completeSignup(req, res) {
         }
 
         const tokens = generateTokens(user);
+
+        // Save refresh token
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+        await saveRefreshToken(user.id, tokens.refreshToken, expiresAt);
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
@@ -120,5 +126,94 @@ export async function resetPassword(req, res) {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Password reset failed' });
+    }
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+export async function login(req, res) {
+    try {
+        const { email, password } = req.body;
+        const user = await findUserByEmail(email);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password_hash);
+        if (!validPassword) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const tokens = generateTokens(user);
+
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        await saveRefreshToken(user.id, tokens.refreshToken, expiresAt);
+
+        res.cookie('refreshToken', tokens.refreshToken, {
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+            path: '/api/refresh'
+        });
+
+        res.json({
+            success: true,
+            accessToken: tokens.accessToken,
+            user: {
+                id: user.id,
+                fullName: user.fullName,
+                email: user.email
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Login failed' });
+    }
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+export async function logout(req, res) {
+    try {
+        const { refreshToken } = req.cookies;
+        if (refreshToken) {
+            await deleteRefreshToken(refreshToken);
+        }
+        res.clearCookie('refreshToken', { path: '/api/refresh' });
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Logout failed' });
+    }
+}
+
+/* ============================================================
+   PROFILE
+   ============================================================ */
+export async function getProfile(req, res) {
+    try {
+        const userId = req.user.id;
+
+        const { rows } = await pool.query('SELECT id, full_name AS "fullName", email FROM users WHERE id = $1', [userId]);
+        const user = rows[0];
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const balance = await getUserBalance(pool, userId);
+
+        res.json({
+            success: true,
+            user: {
+                ...user,
+                balance
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to fetch profile' });
     }
 }

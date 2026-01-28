@@ -3,10 +3,13 @@ import styles from '../styles/components/investmentForm.module.css';
 
 export default function InvestmentForm({ businessName, onConfirm }) {
     const [amount, setAmount] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        onConfirm(Number(amount));
+        setLoading(true);
+        await onConfirm(Number(amount));
+        setLoading(false);
         setAmount('');
     }
 
@@ -22,7 +25,9 @@ export default function InvestmentForm({ businessName, onConfirm }) {
                     onChange={e => setAmount(e.target.value)}
                     required
                 />
-                <button className={styles.button}>Confirm</button>
+                <button className={styles.button} disabled={loading}>
+                    {loading ? '...' : 'Confirm'}
+                </button>
             </form>
         </div>
     );
