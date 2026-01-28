@@ -8,11 +8,14 @@ export default function CreatePost({ onPostCreated }) {
     const [content, setContent] = useState('');
     const [amountNeeded, setAmountNeeded] = useState('');
     const [category, setCategory] = useState('General');
+    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
         const token = localStorage.getItem('accessToken');
         if (!token) return;
+
+        setLoading(true);
 
         await fetch(`${API_BASE_URL}/api/posts`, {
             method: 'POST',
@@ -23,6 +26,7 @@ export default function CreatePost({ onPostCreated }) {
             body: JSON.stringify({ content, amountNeeded, category })
         });
 
+        setLoading(false);
         setContent('');
         setAmountNeeded('');
         setCategory('General');
@@ -60,7 +64,9 @@ export default function CreatePost({ onPostCreated }) {
                         ))}
                     </select>
 
-                    <button className={styles.button}>Post</button>
+                        <button className={styles.button} disabled={loading}>
+                            {loading ? 'Posting...' : 'Post'}
+                        </button>
                 </div>
             </form>
         </div>

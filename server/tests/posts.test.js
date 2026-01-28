@@ -18,10 +18,28 @@ describe('Posts Endpoints', () => {
     let token;
 
     beforeAll(async () => {
-        await request(app).post('/api/signup/request-otp').send({ email: 'poster@example.com', captchaAnswer: '1', captchaExpected: '1' });
+        // Mock Captcha Flow (DB approach) or use a helper.
+        // For simplicity in test, we can request a captcha first.
+        const captchaRes = await request(app).get('/api/captcha');
+        const captchaId = captchaRes.body.id;
+        const [a, b] = captchaRes.body.question.split(' + ');
+        const captchaAnswer = (parseInt(a) + parseInt(b)).toString();
+
+        await request(app).post('/api/signup/request-otp').send({
+            email: 'poster@example.com',
+            captchaAnswer,
+            captchaId
+        });
+
         const { sendEmailOtp } = await import('../services/email.service.js');
         const otp = sendEmailOtp.mock.calls[0][1];
-        const signupRes = await request(app).post('/api/signup/complete').send({ fullName: 'Poster', email: 'poster@example.com', password: 'password', otp });
+
+        const signupRes = await request(app).post('/api/signup/complete').send({
+            fullName: 'Poster',
+            email: 'poster@example.com',
+            password: 'Password123!',
+            otp
+        });
         token = signupRes.body.accessToken;
     });
 

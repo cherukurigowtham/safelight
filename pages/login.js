@@ -13,10 +13,12 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     async function handleLogin(e) {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         const res = await fetch(`${API_BASE_URL}/api/login`, {
             method: 'POST',
@@ -26,6 +28,7 @@ export default function Login() {
         });
 
         const data = await res.json();
+        setLoading(false);
 
         if (!res.ok) {
             setError(data.message || 'Login failed');
@@ -71,7 +74,9 @@ export default function Login() {
                             required
                         />
 
-                        <button className={styles.button}>Login</button>
+                        <button className={styles.button} disabled={loading}>
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
                     </form>
 
                     <p className={styles.footerText}>

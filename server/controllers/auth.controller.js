@@ -3,7 +3,7 @@ import { pool } from '../config/db.js';
 import { registerUser, generateTokens, findUserByEmail, saveRefreshToken, deleteRefreshToken } from '../services/auth.service.js';
 import { createEmailOtp, verifyEmailOtp } from '../services/otp.service.js';
 import { sendEmailOtp } from '../services/email.service.js';
-import { verifyCaptcha } from '../services/captcha.service.js';
+import { verifyCaptcha } from './captcha.controller.js';
 import { getUserBalance } from '../repositories/wallet.repository.js';
 
 /* ============================================================
@@ -12,9 +12,10 @@ import { getUserBalance } from '../repositories/wallet.repository.js';
 
 export async function requestSignupOtp(req, res) {
     try {
-        const { email, captchaAnswer, captchaExpected } = req.body;
+        const { email, captchaAnswer, captchaId } = req.body;
 
-        if (!verifyCaptcha(captchaExpected, captchaAnswer)) {
+        const validCaptcha = await verifyCaptcha(captchaId, captchaAnswer);
+        if (!validCaptcha) {
             return res.status(400).json({ message: 'Invalid CAPTCHA' });
         }
 

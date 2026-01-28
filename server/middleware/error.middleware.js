@@ -1,12 +1,17 @@
-export function errorHandler(err, req, res, next) {
-    // prevent unused-vars linting issues for environments where next isn't used
-    void next;
-    console.error('🔥 SERVER ERROR:', err);
+import logger from '../config/logger.js';
 
-    res.status(500).json({
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development'
-            ? err.message
-            : undefined
+export function errorHandler(err, req, res, next) {
+    if (res.headersSent) {
+        return next(err);
+    }
+
+    logger.error(err.message, { stack: err.stack, method: req.method, url: req.url });
+
+    const status = err.status || 500;
+    const message = status === 500 ? 'Internal Server Error' : err.message;
+
+    res.status(status).json({
+        message,
+        ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
     });
 }

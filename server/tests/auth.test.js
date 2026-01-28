@@ -9,22 +9,38 @@ jest.unstable_mockModule('../config/db.js', () => ({ pool }));
 jest.unstable_mockModule('../services/email.service.js', () => ({
     sendEmailOtp: jest.fn().mockResolvedValue(true)
 }));
-jest.unstable_mockModule('../services/captcha.service.js', () => ({
-    verifyCaptcha: jest.fn().mockReturnValue(true)
-}));
+
+// We don't mock captcha.controller.js because we want to test it (or mock it if it's external, but now it's internal DB).
+// However, the controller is imported by auth.controller.js.
+// Since we are using the real controller, we need to make sure the flow works.
+// Or we can mock the verifyCaptcha function from the controller if we want to bypass the DB check.
+// Let's use real DB check for integration test completeness.
 
 const { default: app } = await import('../app.js');
 
 describe('Auth Endpoints', () => {
     let otp;
+    let captchaId;
+    let captchaAnswer;
+
+    it('should get captcha', async () => {
+        const res = await request(app).get('/api/captcha');
+        expect(res.status).toBe(200);
+        expect(res.body.id).toBeDefined();
+        expect(res.body.question).toBeDefined();
+
+        captchaId = res.body.id;
+        const [a, b] = res.body.question.split(' + ');
+        captchaAnswer = (parseInt(a) + parseInt(b)).toString();
+    });
 
     it('should request signup OTP', async () => {
         const res = await request(app)
             .post('/api/signup/request-otp')
             .send({
                 email: 'test@example.com',
-                captchaAnswer: '123',
-                captchaExpected: 'hashed123'
+                captchaAnswer: captchaAnswer,
+                captchaId: captchaId
             });
 
         expect(res.status).toBe(200);
@@ -40,7 +56,7 @@ describe('Auth Endpoints', () => {
             .send({
                 fullName: 'Test User',
                 email: 'test@example.com',
-                password: 'password123',
+                password: 'Password123!', // Met complexity requirements
                 otp
             });
 
@@ -59,7 +75,7 @@ describe('Auth Endpoints', () => {
             .post('/api/login')
             .send({
                 email: 'test@example.com',
-                password: 'password123'
+                password: 'Password123!'
             });
 
         expect(res.status).toBe(200);
@@ -75,7 +91,7 @@ describe('Auth Endpoints', () => {
             .post('/api/login')
             .send({
                 email: 'test@example.com',
-                password: 'password123'
+                password: 'Password123!'
             });
          const token = loginRes.body.accessToken;
 

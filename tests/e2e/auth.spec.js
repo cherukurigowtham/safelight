@@ -4,6 +4,13 @@ test.describe('Authentication', () => {
 
   test('Signup Flow', async ({ page }) => {
     // Mock API requests
+    await page.route('**/api/captcha', async route => {
+      await route.fulfill({
+          status: 200,
+          json: { id: 'mock-captcha-id', question: '5 + 3' }
+      });
+    });
+
     await page.route('**/api/signup/request-otp', async route => {
       await route.fulfill({ status: 200, json: { success: true } });
     });

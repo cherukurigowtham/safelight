@@ -22,16 +22,27 @@ describe('Investments Endpoints', () => {
     beforeAll(async () => {
         const { sendEmailOtp } = await import('../services/email.service.js');
 
+        // Helper
+        const getCaptcha = async () => {
+            const res = await request(app).get('/api/captcha');
+            const id = res.body.id;
+            const [a, b] = res.body.question.split(' + ');
+            const answer = (parseInt(a) + parseInt(b)).toString();
+            return { id, answer };
+        };
+
         // Create Creator
-        await request(app).post('/api/signup/request-otp').send({ email: 'creator@example.com', captchaAnswer: '1', captchaExpected: '1' });
+        let cap = await getCaptcha();
+        await request(app).post('/api/signup/request-otp').send({ email: 'creator@example.com', captchaAnswer: cap.answer, captchaId: cap.id });
         let otp = sendEmailOtp.mock.calls[0][1];
-        const creatorRes = await request(app).post('/api/signup/complete').send({ fullName: 'Creator', email: 'creator@example.com', password: 'password', otp });
+        const creatorRes = await request(app).post('/api/signup/complete').send({ fullName: 'Creator', email: 'creator@example.com', password: 'Password123!', otp });
         creatorToken = creatorRes.body.accessToken;
 
         // Create Investor
-        await request(app).post('/api/signup/request-otp').send({ email: 'investor@example.com', captchaAnswer: '1', captchaExpected: '1' });
+        cap = await getCaptcha();
+        await request(app).post('/api/signup/request-otp').send({ email: 'investor@example.com', captchaAnswer: cap.answer, captchaId: cap.id });
         otp = sendEmailOtp.mock.calls[1][1];
-        const investorRes = await request(app).post('/api/signup/complete').send({ fullName: 'Investor', email: 'investor@example.com', password: 'password', otp });
+        const investorRes = await request(app).post('/api/signup/complete').send({ fullName: 'Investor', email: 'investor@example.com', password: 'Password123!', otp });
         investorToken = investorRes.body.accessToken;
 
         // Create Post
