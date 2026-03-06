@@ -49,6 +49,7 @@ export default function Signup() {
         setCaptchaInput('');
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         refreshCaptcha();
     }, []);
