@@ -22,8 +22,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-import { PORT, NODE_ENV, DATABASE_URL, FRONTEND_ORIGIN, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from './config/env.js';
-import { registerUser, findUserByEmail, generateTokens, saveRefreshToken, deleteRefreshToken } from './services/auth.service.js';
+import { PORT, NODE_ENV, FRONTEND_ORIGIN, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from './config/env.js';
+import { findUserByEmail, generateTokens, saveRefreshToken, deleteRefreshToken } from './services/auth.service.js';
 import postsRoutes from './routes/posts.routes.js';
 import investmentsRoutes from './routes/investments.routes.js';
 
@@ -73,8 +73,8 @@ const upload = multer({
    IN-MEMORY STORES (TEMP)
    ============================================================ */
 
-const users = []; // legacy in-memory, will be superseded by DB in production
-const refreshTokens = [];
+// const users = []; // legacy in-memory, will be superseded by DB in production
+// const refreshTokens = [];
 // In production, OTPs and messages are persisted in DB (DB migrations introduced)
 // Removed in-memory stores in favor of DB-backed implementations
 
@@ -82,11 +82,11 @@ const refreshTokens = [];
    INPUT VALIDATION SCHEMAS (9.6)
    ============================================================ */
 
-const signupSchema = z.object({
-  fullName: z.string().min(2),
-  email: z.string().email(),
-  password: z.string().min(8)
-});
+// const signupSchema = z.object({
+//   fullName: z.string().min(2),
+//   email: z.string().email(),
+//   password: z.string().min(8)
+// });
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -356,7 +356,8 @@ app.get('/api/profile', authenticateAccessToken, async (req, res) => {
     const user = rows[0];
     if (!user) return res.sendStatus(404);
     res.json({ user });
-  } catch (err) {
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
@@ -370,7 +371,7 @@ app.post('/api/logout', async (req, res) => {
   if (refreshToken) {
     try {
       await deleteRefreshToken(refreshToken);
-    } catch { }
+    } catch (e) { console.error(e); }
   }
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
@@ -484,7 +485,8 @@ app.post('/api/password/reset', async (req, res) => {
     // consume OTP
     await pool.query('DELETE FROM otp_tokens WHERE email = $1 AND code = $2', [email, otp]);
     res.json({ success: true });
-  } catch (err) {
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
