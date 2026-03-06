@@ -17,8 +17,8 @@ export default function Custom404() {
                 <div className={styles.errorCode}>404</div>
                 <h1 className={styles.title}>Under Construction or Missing</h1>
                 <p className={styles.description}>
-                    Oops! The page you're looking for doesn't exist or has been moved.
-                    Let's get you back on track to your investments.
+                    Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
+                    Let&apos;s get you back on track to your investments.
                 </p>
                 <Link href="/" className={styles.button}>
                     Return to Dashboard

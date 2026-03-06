@@ -41,6 +41,14 @@ export default function Signup() {
     const [captcha, setCaptcha] = useState({ q: '', a: 0 });
     const [captchaInput, setCaptchaInput] = useState('');
 
+    // refreshCaptcha available for manual refresh after mount
+    function refreshCaptcha() {
+        const a = Math.floor(Math.random() * 10) + 1;
+        const b = Math.floor(Math.random() * 10) + 1;
+        setCaptcha({ q: `${a} + ${b}`, a: a + b });
+        setCaptchaInput('');
+    }
+
     useEffect(() => {
         refreshCaptcha();
     }, []);
@@ -53,13 +61,6 @@ export default function Signup() {
        CAPTCHA
        ======================================================== */
 
-    // refreshCaptcha available for manual refresh after mount
-    function refreshCaptcha() {
-        const a = Math.floor(Math.random() * 10) + 1;
-        const b = Math.floor(Math.random() * 10) + 1;
-        setCaptcha({ q: `${a} + ${b}`, a: a + b });
-        setCaptchaInput('');
-    }
 
     /* ========================================================
        STEP 1 — SEND OTP

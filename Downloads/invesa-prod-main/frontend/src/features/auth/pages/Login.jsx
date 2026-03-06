@@ -1,6 +1,6 @@
 // Auth page — sign in / sign up with email+password or OAuth (GitHub, Google)
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { authClient } from '../../../shared/lib/authClient.js';
 
 const GitHubIcon = () => (
@@ -157,6 +157,7 @@ const AuthPage = () => {
             <div style={{ position: 'relative', width: '100%', maxWidth: '460px' }}>
                 {/* Logo */}
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '28px' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/logo.png" alt="Invesa" style={{ height: '40px', width: 'auto' }} />
                 </div>
 
@@ -301,9 +302,9 @@ const AuthPage = () => {
                             </button>
 
                             <p style={{ textAlign: 'center', margin: 0 }}>
-                                <a href="/forgot-password" style={{ color: '#10b981', fontSize: '13px', textDecoration: 'none' }}>
+                                <Link to="/forgot-password" style={{ color: '#10b981', fontSize: '13px', textDecoration: 'none' }}>
                                     Forgot password?
-                                </a>
+                                </Link>
                             </p>
                         </form>
                     )}
