@@ -62,12 +62,12 @@ app.use('/api/signup', authLimiter);
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: uploadDir,
-    filename: (_, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-  })
-});
+// const upload = multer({
+//   storage: multer.diskStorage({
+//     destination: uploadDir,
+//     filename: (_, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
+//   })
+// });
 
 /* ============================================================
    IN-MEMORY STORES (TEMP)
@@ -383,7 +383,8 @@ app.get('/healthz', async (req, res) => {
   try {
     await pool.query('SELECT 1');
     res.status(200).json({ status: 'ok', database: 'connected' });
-  } catch (err) {
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ status: 'error', database: 'disconnected' });
   }
 });
