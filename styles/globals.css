@@ -1,15 +1,18 @@
 :root {
-    --bg-primary: #050505;
-    --bg-secondary: #0f0f0f;
-    --text-primary: #f0f0f0;
-    --text-secondary: #a0a0a0;
-    --accent-gold: #d4af37;
-    --accent-gold-hover: #b4912f;
-    --glass-bg: rgba(20, 20, 20, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.08);
+    --bg-primary: #0a0b10;
+    --bg-secondary: #14161f;
+    --text-primary: #e8eaed;
+    --text-secondary: #9aa0a6;
+    --accent-blue: #4285f4;
+    --accent-blue-hover: #1a73e8;
+    --glass-bg: rgba(20, 22, 31, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
     --header-height: 70px;
     --footer-height: 60px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
 }
 
 html,

@@ -66,7 +66,8 @@
 }
 
 .input:focus {
-    border-color: var(--accent-gold);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
 }
 
 /* ============================================================
@@ -75,18 +76,22 @@
 
 .button {
     width: 100%;
-    padding: 0.8rem;
-    margin-top: 0.5rem;
-    background: linear-gradient(
-        135deg,
-        var(--accent-gold),
-        var(--accent-gold-hover)
-    );
+    padding: 0.9rem;
+    margin-top: 1rem;
+    background: var(--accent-blue);
     border: none;
-    border-radius: 8px;
-    color: #000;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.button:hover {
+    background: var(--accent-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
 }
 
 .button:disabled {

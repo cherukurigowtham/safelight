@@ -1,18 +1,20 @@
 .header {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.9),
-        rgba(0, 0, 0, 0.75)
-    );
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(8px);
+    height: var(--header-height);
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
 }
 
 .inner {
     max-width: 1200px;
+    height: 100%;
     margin: 0 auto;
-    padding: 16px 24px;
+    padding: 0 24px;
 
     display: flex;
     align-items: center;
@@ -20,19 +22,26 @@
 }
 
 /* =========================
-   Logo
+   Logo & Brand
    ========================= */
 
-.logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #d4b254; /* gold */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     text-decoration: none;
-    letter-spacing: 0.5px;
+    transition: transform 0.2s ease;
 }
 
-.logo:hover {
-    opacity: 0.9;
+.brand:hover {
+    transform: translateY(-1px);
+}
+
+.logoText {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
 }
 
 /* =========================
@@ -42,45 +51,64 @@
 .nav {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
 }
 
-.nav a {
-    color: #cbd5e1; /* soft gray */
+.link {
+    color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     transition: color 0.2s ease;
 }
 
-.nav a:hover {
-    color: #facc15; /* gold hover */
+.link:hover {
+    color: var(--accent-blue);
 }
-
-/* =========================
-   User Greeting
-   ========================= */
 
 .user {
-    font-size: 0.95rem;
-    color: #facc15; /* gold */
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.user strong {
+    color: var(--text-primary);
 }
 
 /* =========================
-   Logout Button
+   Buttons
    ========================= */
 
 .logout {
     background: transparent;
-    border: 1px solid rgba(250, 204, 21, 0.6);
-    color: #facc15;
-    padding: 6px 14px;
-    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
     font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .logout:hover {
-    background: rgba(250, 204, 21, 0.1);
-    border-color: #facc15;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.signupButton {
+    background: var(--accent-blue);
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.signupButton:hover {
+    background: var(--accent-blue-hover);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
 }

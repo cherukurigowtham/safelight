@@ -45,7 +45,6 @@ export default function Home() {
         }
 
         fetchPosts();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery, selectedCategory]);
 
     /* ========================================================
@@ -84,17 +83,15 @@ export default function Home() {
        ======================================================== */
 
     async function handleLike(postId) {
-        const token = localStorage.getItem('accessToken');
-        if (!token) return router.push('/login');
-
         try {
-            await fetch(`${API_BASE_URL}/api/posts/${postId}/like`, {
+            const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/like`, {
                 method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
                 credentials: 'include'
             });
+
+            if (res.status === 401) {
+                return router.push('/login');
+            }
 
             fetchPosts();
         } catch (error) {
@@ -103,19 +100,19 @@ export default function Home() {
     }
 
     async function handleInvest(postId, amount) {
-        const token = localStorage.getItem('accessToken');
-        if (!token) return router.push('/login');
-
         try {
             const response = await fetch(`${API_BASE_URL}/api/invest`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
                 credentials: 'include', // 🔐 REQUIRED
                 body: JSON.stringify({ postId, amount })
             });
+
+            if (response.status === 401) {
+                return router.push('/login');
+            }
 
             const data = await response.json();
 
@@ -127,13 +124,13 @@ export default function Home() {
             // Refresh posts and user balance
             fetchPosts();
 
-            const updatedUser = {
-                ...user,
-                balance: (user?.balance || 0) - amount
-            };
-
-            setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
+            // Optionally refresh user profile to get updated balance from server
+            const profileRes = await fetch(`${API_BASE_URL}/api/profile`, { credentials: 'include' });
+            if (profileRes.ok) {
+                const profileData = await profileRes.json();
+                setUser(profileData.user);
+                localStorage.setItem('user', JSON.stringify(profileData.user));
+            }
 
             setActiveInvestmentPostId(null);
         } catch (error) {
